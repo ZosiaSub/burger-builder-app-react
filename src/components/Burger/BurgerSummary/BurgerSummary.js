@@ -3,6 +3,9 @@ import Aux from '../../../hoc/Wrapper';
 import Button from '../../UI/Button/Button';
 
 class BurgerSummary extends PureComponent {
+    componentWillUpdate () {
+        console.log('BurgerSummary');
+    }
     render () {
         const { ingredients, price, cancel, continueSummary } = this.props;
         const summaryIngredients = Object.keys(ingredients).map((key) => {

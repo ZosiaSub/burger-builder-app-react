@@ -10,7 +10,6 @@ class Layout extends PureComponent {
     }
 
     sideDrawerToggleHander = () => {
-        console.log(this);
         this.setState((prevState) => {
             return { sideDrawerOpen: !prevState.sideDrawerOpen };
         });
