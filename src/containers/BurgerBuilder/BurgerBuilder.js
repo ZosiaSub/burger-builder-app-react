@@ -4,6 +4,9 @@ import Burger from '../../components/Burger/Burger';
 import BuildConstrols from '../../../src/components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import BurgerSummary from '../../components/Burger/BurgerSummary/BurgerSummary';
+import axios from '../../../src/axios-orders';
+import Spinner from "../../components/UI/Spinner/Spinner";
+import withErrorHandler from '../../hoc/withErrorHandling/withErrorHandling';
 
 class BurgerBuilder extends Component {
     state = {
@@ -19,9 +22,10 @@ class BurgerBuilder extends Component {
             meat: 0.9,
             bacon: 0.7
         },
-        totalPrice: 4,
+        totalPrice: 0,
         purchasable: false,
-        purchasing: false
+        purchasing: false,
+        loading: false,
     }
 
     purchaseHandler = () => {
@@ -33,7 +37,28 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        alert('You continue this later ;)');
+        this.setState({ loading: true });
+        const order = {
+            ingredients: this.state.ingredients,
+            price: this.state.totalPrice,
+            customer: {
+                name: 'Zenon Zorro',
+                address: {
+                    street: 'Budyniowa 43',
+                    zipCode: '72-300',
+                    City: 'Szczecin',
+                },
+                email: 'zochurka@o2.pl',
+            },
+            deliveryMethod: 'fastest',
+        };
+        axios.post('./orders.json', order)
+            .then((response) => {
+                this.setState({ loading: false, purchasing: false });
+            })
+            .catch(error => {
+                this.setState({ loading: false, purchasing: false });
+            });
     }
 
     updatePurchasable = (ingredients) => {
@@ -57,7 +82,7 @@ class BurgerBuilder extends Component {
         const newPrice = oldPrice + this.state.ingredientsPrice[type]
         this.setState({
            ingredients: updatedIngredients,
-           totalPrice: newPrice            
+           totalPrice: newPrice
         })
         this.updatePurchasable(updatedIngredients);
     }
@@ -86,30 +111,34 @@ class BurgerBuilder extends Component {
         for (let i in disabledInfo) {
             disabledInfo[i] = disabledInfo[i] <= 0
         }
+        let orderSummary = <BurgerSummary
+            ingredients={this.state.ingredients}
+            price={this.state.totalPrice.toFixed(2)}
+            continueSummary={this.purchaseContinueHandler}
+            cancel={this.purchaseCancelHandler}
+        />;
+        if(this.state.loading) {
+            orderSummary = <Spinner />;
+        }
         return (
             <Aux>
-                <Modal 
+                <Modal
                     show={this.state.purchasing}
                     modalClosed={this.purchaseCancelHandler}>
-                    <BurgerSummary 
-                        ingredients={this.state.ingredients} 
-                        price={this.state.totalPrice.toFixed(2)}
-                        continueSummary={this.purchaseContinueHandler}
-                        cancel={this.purchaseCancelHandler}
-                    />
-                </Modal>   
+                    {orderSummary}
+                </Modal>
                 <Burger ingredients={this.state.ingredients} />
-                <BuildConstrols 
+                <BuildConstrols
                     addHandler={this.addIngredientHandler}
-                    deductHandler={this.deductIngredientHandler} 
-                    disabled={disabledInfo}  
+                    deductHandler={this.deductIngredientHandler}
+                    disabled={disabledInfo}
                     purchasable={this.state.purchasable}
                     purchasing={this.purchaseHandler}
-                    price={this.state.totalPrice} 
+                    price={this.state.totalPrice}
                 />
             </Aux>
         );
     }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);
