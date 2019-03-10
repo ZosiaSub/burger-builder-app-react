@@ -4,7 +4,7 @@ import Button from '../../UI/Button/Button';
 
 class BurgerSummary extends PureComponent {
     componentWillUpdate () {
-        console.log('BurgerSummary');
+        console.log('BurgerSummary ComponentWillUpdate');
     }
     render () {
         const { ingredients, price, cancel, continueSummary } = this.props;

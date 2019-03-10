@@ -10,12 +10,7 @@ import withErrorHandler from '../../hoc/withErrorHandling/withErrorHandling';
 
 class BurgerBuilder extends Component {
     state = {
-        ingredients: {
-            salad: 0,
-            cheese: 0,
-            meat: 0,
-            bacon: 0
-        },
+        ingredients: null,
         ingredientsPrice: {
             salad: 0.5,
             cheese: 0.4,
@@ -26,6 +21,16 @@ class BurgerBuilder extends Component {
         purchasable: false,
         purchasing: false,
         loading: false,
+    }
+
+    componentDidMount() {
+        axios.get('https://burger-app-e1816.firebaseio.com/ingredients.json')
+            .then(response => {
+                console.log(response)
+                this.setState({ingredients: response.data})
+            })
+            .catch(err => console.log('problems with retriving data'));
+            
     }
 
     purchaseHandler = () => {
@@ -111,15 +116,38 @@ class BurgerBuilder extends Component {
         for (let i in disabledInfo) {
             disabledInfo[i] = disabledInfo[i] <= 0
         }
-        let orderSummary = <BurgerSummary
+        let orderSummary = null;
+        if (this.state.ingredients) {
+            orderSummary = (
+                <BurgerSummary
             ingredients={this.state.ingredients}
             price={this.state.totalPrice.toFixed(2)}
             continueSummary={this.purchaseContinueHandler}
             cancel={this.purchaseCancelHandler}
-        />;
+            />
+            )
+        }
+        
         if(this.state.loading) {
             orderSummary = <Spinner />;
         }
+        let burger = <Spinner />;
+        if (this.state.ingredients){
+           burger = (
+               <Aux>
+                    <Burger ingredients={this.state.ingredients} />
+                    <BuildConstrols
+                        addHandler={this.addIngredientHandler}
+                        deductHandler={this.deductIngredientHandler}
+                        disabled={disabledInfo}
+                        purchasable={this.state.purchasable}
+                        purchasing={this.purchaseHandler}
+                        price={this.state.totalPrice}
+                    />
+               </Aux>
+            );
+        }
+        
         return (
             <Aux>
                 <Modal
@@ -127,15 +155,7 @@ class BurgerBuilder extends Component {
                     modalClosed={this.purchaseCancelHandler}>
                     {orderSummary}
                 </Modal>
-                <Burger ingredients={this.state.ingredients} />
-                <BuildConstrols
-                    addHandler={this.addIngredientHandler}
-                    deductHandler={this.deductIngredientHandler}
-                    disabled={disabledInfo}
-                    purchasable={this.state.purchasable}
-                    purchasing={this.purchaseHandler}
-                    price={this.state.totalPrice}
-                />
+                {burger}
             </Aux>
         );
     }
