@@ -17,8 +17,8 @@ class OrderSummary extends PureComponent {
             <div className={classes.OrderSummary}>
                 <h2>Looks tasty!</h2>
                 <Burger ingredients={this.state.ingredients}/>
-                <Button btnType='Danger'>CANCEL</Button>
-                <Button btnType='Success'>CONTINUE</Button>
+                <Button btnType='Danger' clicked={this.props.checkoutCanceled}>CANCEL</Button>
+                <Button btnType='Success' clicked={this.props.checkoutContinued}>CONTINUE</Button>
             </div>
         )
     }

@@ -2,12 +2,26 @@ import React from 'react';
 import OrderSummary from '../../components/Order/OrderSummary/OrderSummary';
 import classes from './Checkout.css';
 
-const Checkout = (props) => {
-    return (
+class Checkout extends React.PureComponent {
+
+    checkoutCanceledHandler = () => {
+        this.props.history.goBack();
+    };
+
+    checkoutContinuedHandler = () => {
+        this.props.history.replace('/checkout/contact-data');
+    };
+
+    render() {
+        return (
         <div className={classes.Checkout}>
-            <OrderSummary />
+            <OrderSummary 
+                checkoutCanceled={this.checkoutCanceledHandler}
+                checkoutContinued={this.checkoutContinuedHandler}
+            />
         </div>        
-    )
+        )
+    }
 }
 
 export default Checkout;
