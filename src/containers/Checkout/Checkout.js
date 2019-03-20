@@ -1,6 +1,8 @@
 import React from 'react';
 import OrderSummary from '../../components/Order/OrderSummary/OrderSummary';
 import Burger from '../../components/Burger/Burger';
+import { Route } from 'react-router-dom';
+import ContactData from './ContactData/ContactData';
 import classes from './Checkout.css';
 
 class Checkout extends React.PureComponent {
@@ -37,8 +39,9 @@ class Checkout extends React.PureComponent {
             <Burger ingredients={this.state.ingredients}/>
             <OrderSummary 
                 checkoutCanceled={this.checkoutCanceledHandler}
-                checkoutContinued={this.checkoutContinuedHandler}
+                checkoutContinued={this.checkoutContinuedHandler} 
             />
+            <Route path={this.props.match.path + '/contact-data'} component={ContactData} />
         </div>        
         )
     }
