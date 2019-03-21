@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import Burger from '../../Burger/Burger';
 import Button from '../../UI/Button/Button.js';
 import classes from './OrderSummary.css';
 
