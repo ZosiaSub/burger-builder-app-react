@@ -13,6 +13,7 @@ class ContactData extends React.Component {
             postalCode: ''
         },
         loading: false,
+        totalPrice: 0,
     }
 
     orderHandler = (event) => {
@@ -35,6 +36,7 @@ class ContactData extends React.Component {
         axios.post('./orders.json', order)
             .then((response) => {
                 this.setState({ loading: false });
+                this.props.history.push('/');
             })
             .catch(error => {
                 this.setState({ loading: false });
@@ -56,7 +58,7 @@ class ContactData extends React.Component {
         return (
             <div className={classses.ContactData}>
                 <h4>Enter your contact data</h4>
-                
+                {form}
             </div>
         )
     }
