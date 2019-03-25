@@ -20,8 +20,8 @@ class ContactData extends React.Component {
         event.preventDefault();
         this.setState({ loading: true });
         const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
+            ingredients: this.props.ingredients,
+            price: this.props.price,
             customer: {
                 name: 'Zenon Zorro',
                 address: {
@@ -49,7 +49,7 @@ class ContactData extends React.Component {
                 <input className={classses.Input} type='text' name='name' placeholder='Your name'></input>
                 <input className={classses.Input} type='email' name='email' placeholder='Your e-mail'></input>
                 <input className={classses.Input} type='text' name='street' placeholder='Street'></input>     <input className={classses.Input} type='text' name='postalCode' placeholder='Postal code'></input>
-                <Button btnType='Success' clicked={this.props.clicked}>ORDER</Button>    
+                <Button btnType='Success' clicked={this.orderHandler}>ORDER</Button>    
             </form>
         )
         if (this.state.loading) {
